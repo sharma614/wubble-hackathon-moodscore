@@ -108,8 +108,18 @@ export async function getWubbleTrackStatus(
 
     return await response.json();
   } catch (err: unknown) {
-    // If API unavailable, simulate mock completed track
-    const demoAudioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    // If API unavailable, simulate mock completed track with a deterministic variation
+    const fallbackTracks = [
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
+    ];
+    // Use last character of trackId to pick a somewhat deterministic track
+    const charCode = trackId.charCodeAt(trackId.length - 1) || 0;
+    const demoAudioUrl = fallbackTracks[charCode % fallbackTracks.length];
+    
     return {
       id: trackId,
       status: "completed",

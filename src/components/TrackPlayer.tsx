@@ -115,6 +115,8 @@ export default function TrackPlayer({
             setIsLoading(false);
           }
         }}
+        onCanPlay={() => setIsLoading(false)}
+        onCanPlayThrough={() => setIsLoading(false)}
         onEnded={() => {
           setIsPlaying(false);
           setCurrentTime(0);

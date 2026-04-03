@@ -72,10 +72,19 @@ export async function GET(req: NextRequest) {
 
   // If it's a local mock id (API wasn't reachable), return the mock audio url
   if (trackId.startsWith("wubble_mock_")) {
+    const fallbackTracks = [
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
+    ];
+    const charCode = trackId.charCodeAt(trackId.length - 1) || 0;
+    
     return NextResponse.json({
       id: trackId,
       status: "completed",
-      audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      audio_url: fallbackTracks[charCode % fallbackTracks.length],
       duration: 30,
       progress: 100,
       demo: true,
