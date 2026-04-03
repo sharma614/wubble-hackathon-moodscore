@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import EcosystemModal from "./EcosystemModal";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -55,15 +57,32 @@ export default function Header() {
 
         {/* CTA */}
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-full border transition-all duration-300 hover:scale-105"
+            style={{ borderColor: "rgba(236,72,153,0.4)", background: "rgba(236,72,153,0.1)", color: "#f472b6" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Dev Ecosystem
+          </button>
+          
           <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
             Wubble Hackathon
           </span>
-          <button className="btn-gradient text-sm font-semibold px-5 py-2 rounded-full">
-            Try Free
-          </button>
+          <a
+            href="https://github.com/sharma614/wubble-hackathon-moodscore"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-black px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide hover:opacity-90 transition-opacity"
+          >
+            GitHub
+          </a>
         </div>
       </div>
+      
+      {/* Dev Ecosystem Modal overlay */}
+      <EcosystemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </header>
   );
 }

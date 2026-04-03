@@ -33,7 +33,6 @@ export default function WaveformVisualizer({
       const x = i / 60;
       return 0.2 + 0.8 * Math.abs(Math.sin(x * Math.PI * 4) * Math.cos(x * Math.PI * 2.5));
     });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWaveformData(bars);
   }, [audioUrl]);
 

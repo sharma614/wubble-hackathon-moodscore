@@ -9,6 +9,7 @@ import GenerateButton from "@/components/GenerateButton";
 import TrackPlayer from "@/components/TrackPlayer";
 import HowItWorks from "@/components/HowItWorks";
 import HistoryPanel, { saveToHistory, HistoryItem } from "@/components/HistoryPanel";
+import TasteProfile from "@/components/TasteProfile";
 import ShareButton from "@/components/ShareButton";
 
 interface VideoData {
@@ -59,6 +60,7 @@ function HomePageInner() {
   const [variations, setVariations] = useState<GeneratedTrack[]>([]);
   const [selectedVariation, setSelectedVariation] = useState(0);
   const [generateCount, setGenerateCount] = useState(1);
+  const [totalGenerates, setTotalGenerates] = useState(0);
 
   const activeTrack = variations.length > 0 ? variations[selectedVariation] : generatedTrack;
 
@@ -153,6 +155,7 @@ function HomePageInner() {
       clearInterval(stepInterval);
       setIsLoading(false);
       setLoadingStep("");
+      setTotalGenerates((prev) => prev + 1);
     }
   };
 
@@ -368,6 +371,13 @@ function HomePageInner() {
                   ))}
                 </div>
               </div>
+
+              {/* Implicit Profile Mockup */}
+              <TasteProfile 
+                recentMood={selectedMood} 
+                recentGenre={selectedGenre} 
+                generateCount={totalGenerates} 
+              />
 
               {/* Quick Tips */}
               <div className="glass-card p-5 relative overflow-hidden">
