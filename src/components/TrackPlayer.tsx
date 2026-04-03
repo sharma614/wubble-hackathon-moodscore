@@ -39,7 +39,18 @@ export default function TrackPlayer({
 
   const tick = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
+      const time = audioRef.current.currentTime;
+      setCurrentTime(time);
+      
+      // Enforce the requested duration gracefully (useful in demo/mock mode where tracks are long)
+      if (duration && time >= duration) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        setIsPlaying(false);
+        setCurrentTime(0);
+        if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+        return;
+      }
     }
     animFrameRef.current = requestAnimationFrame(tick);
   };
@@ -110,7 +121,8 @@ export default function TrackPlayer({
         src={audioUrl}
         onLoadedMetadata={() => {
           if (audioRef.current) {
-            setAudioDuration(audioRef.current.duration || duration);
+            // Cap the displayed duration to the requested duration
+            setAudioDuration(Math.min(audioRef.current.duration, duration));
             audioRef.current.volume = volume;
             setIsLoading(false);
           }
