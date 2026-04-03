@@ -108,6 +108,7 @@ export default function TrackPlayer({
       <audio
         ref={audioRef}
         src={audioUrl}
+        crossOrigin="anonymous"
         onLoadedMetadata={() => {
           if (audioRef.current) {
             setAudioDuration(audioRef.current.duration || duration);

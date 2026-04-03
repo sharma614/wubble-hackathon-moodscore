@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       id: trackId,
       status: "completed",
-      audio_url: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Tetris_theme.ogg",
+      audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
       duration: 30,
       progress: 100,
       demo: true,
