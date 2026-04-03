@@ -109,7 +109,7 @@ export async function getWubbleTrackStatus(
     return await response.json();
   } catch (err: unknown) {
     // If API unavailable, simulate mock completed track
-    const demoAudioUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e5/Tetris_theme.ogg";
+    const demoAudioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
     return {
       id: trackId,
       status: "completed",
