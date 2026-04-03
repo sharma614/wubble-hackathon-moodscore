@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
       status: result.status,
       audio_url: result.audio_url,
       prompt,
-      demo: result.id?.startsWith("wubble_mock_"),
     });
   } catch (err: unknown) {
     console.error("[generate-music] Error:", err);
@@ -70,26 +69,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing track id" }, { status: 400 });
   }
 
-  // If it's a local mock id (API wasn't reachable), return the mock audio url
-  if (trackId.startsWith("wubble_mock_")) {
-    const fallbackTracks = [
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
-    ];
-    const charCode = trackId.charCodeAt(trackId.length - 1) || 0;
-    
-    return NextResponse.json({
-      id: trackId,
-      status: "completed",
-      audio_url: fallbackTracks[charCode % fallbackTracks.length],
-      duration: 30,
-      progress: 100,
-      demo: true,
-    });
-  }
 
   try {
     const status = await getWubbleTrackStatus(trackId);

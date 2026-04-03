@@ -66,18 +66,13 @@ export async function generateMusicWithWubble(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.warn(`Wubble API generate error ${response.status}: ${errorText}. Falling back to mock...`);
-      throw new Error("API_UNAVAILABLE");
+      console.error(`Wubble API generate error ${response.status}: ${errorText}`);
+      throw new Error(`Wubble API Error: ${response.statusText}`);
     }
 
     return await response.json();
   } catch (err: unknown) {
-    // If the API is not actually running, return a mock response for testing.
-    console.log("Using Mock Wubble Generation");
-    return {
-      id: `wubble_mock_${Date.now()}`,
-      status: "processing",
-    };
+    throw err instanceof Error ? err : new Error(String(err));
   }
 }
 
@@ -102,30 +97,13 @@ export async function getWubbleTrackStatus(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.warn(`Wubble API poll error ${response.status}: ${errorText}. Falling back to mock...`);
-      throw new Error("API_UNAVAILABLE");
+      console.error(`Wubble API poll error ${response.status}: ${errorText}`);
+      throw new Error(`Wubble API Error: ${response.statusText}`);
     }
 
     return await response.json();
   } catch (err: unknown) {
-    // If API unavailable, simulate mock completed track with a deterministic variation
-    const fallbackTracks = [
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3"
-    ];
-    // Use last character of trackId to pick a somewhat deterministic track
-    const charCode = trackId.charCodeAt(trackId.length - 1) || 0;
-    const demoAudioUrl = fallbackTracks[charCode % fallbackTracks.length];
-    
-    return {
-      id: trackId,
-      status: "completed",
-      audio_url: demoAudioUrl,
-      progress: 100,
-    };
+    throw err instanceof Error ? err : new Error(String(err));
   }
 }
 

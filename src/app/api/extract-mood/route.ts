@@ -5,16 +5,38 @@ import { NextRequest, NextResponse } from "next/server";
 // to extract video metadata and suggest the best mood for the soundtrack.
 export async function POST(req: NextRequest) {
   try {
-    const { videoId, url } = await req.json();
+    const { videoId } = await req.json();
 
-    if (!videoId && !url) {
-      return NextResponse.json({ error: "Missing videoId or url" }, { status: 400 });
+    if (!videoId) {
+      return NextResponse.json({ error: "Missing videoId" }, { status: 400 });
     }
 
-    // Enhanced Mock for YT Data API integration
-    // If we had a YouTube API key, we'd fetch snippet & tags here.
-    const isSad = url?.toLowerCase().includes("sad") || videoId?.includes("s");
-    const isEpic = url?.toLowerCase().includes("epic") || videoId?.includes("e");
+    if (!process.env.YOUTUBE_API_KEY) {
+      throw new Error("YOUTUBE_API_KEY not configured for production use.");
+    }
+
+    const ytResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`
+    );
+
+    if (!ytResponse.ok) {
+      throw new Error(`YouTube API failed: ${ytResponse.statusText}`);
+    }
+
+    const ytData = await ytResponse.json();
+
+    if (!ytData.items || ytData.items.length === 0) {
+      return NextResponse.json({ error: "Video not found" }, { status: 404 });
+    }
+
+    const snippet = ytData.items[0].snippet;
+    const title = snippet.title || "";
+    // Note: In a fully-fledged production app, you would pass `title` and `snippet.description` to an LLM 
+    // to dynamically extract the mood. For now, we perform a robust keyword analysis on the title and tags.
+    const lowercaseText = `${title} ${snippet.tags?.join(" ") || ""}`.toLowerCase();
+
+    const isSad = lowercaseText.includes("sad") || lowercaseText.includes("melancholy");
+    const isEpic = lowercaseText.includes("epic") || lowercaseText.includes("action") || lowercaseText.includes("trailer");
 
     const baseMoods = isSad 
       ? ["Melancholic", "Dark", "Calm"]
@@ -27,9 +49,7 @@ export async function POST(req: NextRequest) {
       genre: isSad ? "Ambient" : isEpic ? "Orchestral" : "Pop",
       tempo: isSad ? "slow" : isEpic ? "fast" : "medium",
       energy: isSad ? "low" : isEpic ? "high" : "medium",
-      description:
-        `Video metadata mock analyzed. Suggested moods based on URL patterns (${baseMoods.join(", ")}).`,
-      demo: true,
+      description: `Analyzed from real YouTube metadata for: ${title}`,
     };
 
     return NextResponse.json(suggestions);

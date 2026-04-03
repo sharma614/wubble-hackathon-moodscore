@@ -7,7 +7,6 @@ import WaveformVisualizer from "./WaveformVisualizer";
 interface TrackPlayerProps {
   audioUrl: string;
   trackTitle?: string;
-  isDemo?: boolean;
   prompt?: string;
   mood?: string;
   duration?: number;
@@ -16,7 +15,6 @@ interface TrackPlayerProps {
 export default function TrackPlayer({
   audioUrl,
   trackTitle = "Generated Soundtrack",
-  isDemo = false,
   prompt,
   mood,
   duration = 30,
@@ -162,11 +160,6 @@ export default function TrackPlayer({
             <p className="text-xs text-[var(--text-muted)] mt-0.5 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
               Royalty-free · MP3
-              {isDemo && (
-                <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px]">
-                  Demo
-                </span>
-              )}
             </p>
           </div>
         </div>

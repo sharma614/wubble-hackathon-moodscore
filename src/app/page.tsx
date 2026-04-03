@@ -23,7 +23,6 @@ interface GeneratedTrack {
   audioUrl: string;
   prompt: string;
   mood: string;
-  isDemo?: boolean;
   duration?: number;
 }
 
@@ -106,7 +105,7 @@ function HomePageInner() {
     const completed = await pollTrackStatus(genData.id);
     return {
       id: genData.id, audioUrl: completed.audio_url, prompt: genData.prompt || "",
-      mood: selectedMood, isDemo: completed.demo || genData.demo, duration: completed.duration || duration,
+      mood: selectedMood, duration: completed.duration || duration,
     } as GeneratedTrack;
   };
 
@@ -135,7 +134,7 @@ function HomePageInner() {
           id: track.id, audioUrl: track.audioUrl,
           trackTitle: `${selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1)} Soundtrack`,
           mood: selectedMood, genre: selectedGenre, prompt: track.prompt,
-          createdAt: Date.now(), isDemo: track.isDemo, duration: track.duration,
+          createdAt: Date.now(), duration: track.duration,
         });
       } else {
         const [v1, v2, v3] = await Promise.all([generateOne(), generateOne(), generateOne()]);
@@ -145,7 +144,7 @@ function HomePageInner() {
           id: v1.id, audioUrl: v1.audioUrl,
           trackTitle: `${selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1)} Soundtrack`,
           mood: selectedMood, genre: selectedGenre, prompt: v1.prompt,
-          createdAt: Date.now(), isDemo: v1.isDemo, duration: v1.duration,
+          createdAt: Date.now(), duration: v1.duration,
         });
       }
     } catch (err: unknown) {
@@ -158,7 +157,7 @@ function HomePageInner() {
   };
 
   const handleHistorySelect = (item: HistoryItem) => {
-    setGeneratedTrack({ id: item.id, audioUrl: item.audioUrl, prompt: item.prompt, mood: item.mood, isDemo: item.isDemo, duration: item.duration });
+    setGeneratedTrack({ id: item.id, audioUrl: item.audioUrl, prompt: item.prompt, mood: item.mood, duration: item.duration });
     setVariations([]);
     setSelectedMood(item.mood);
     setSelectedGenre(item.genre);
@@ -330,7 +329,6 @@ function HomePageInner() {
                     <TrackPlayer
                       audioUrl={activeTrack.audioUrl}
                       trackTitle={`${activeTrack.mood ? activeTrack.mood.charAt(0).toUpperCase() + activeTrack.mood.slice(1) : "Custom"} Soundtrack`}
-                      isDemo={activeTrack.isDemo}
                       prompt={activeTrack.prompt}
                       mood={activeTrack.mood}
                       duration={activeTrack.duration}

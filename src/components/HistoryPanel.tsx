@@ -11,7 +11,6 @@ export interface HistoryItem {
   genre: string;
   prompt: string;
   createdAt: number;
-  isDemo?: boolean;
   duration?: number;
 }
 
